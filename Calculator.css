@@ -1,0 +1,95 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #ffe8ee;
+    margin: 0;
+}
+
+h1 {
+    color: #6a0572;
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.calculator {
+    background-color: #fdaacb;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.displayContainer {
+    background-color: #ffd3e0;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: right;
+    font-size: 24px;
+    font-weight: bold;
+    color: #6a0572;
+    margin-bottom: 15px;
+    min-height: 40px;
+    width: calc(4 * 60px + 3 * 10px); /* Adjusted width to fit 4 buttons with gaps */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#display {
+    min-height: 30px;
+    display: block;
+    padding-right: 10px;
+}
+
+.flexContainer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.button {
+    width: 60px;
+    height: 60px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    border: none;
+    border-radius: 15px;
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+    transition: 0.2s;
+}
+
+.button.number {
+    background-color: #ff7797;
+}
+
+.button.operator {
+    background-color: #ff5488;
+}
+
+.button.equals {
+    background-color: #6a0572;
+}
+
+.button.clear {
+    background-color: #92004e;;
+    color: white;
+    grid-column: span 2; 
+    width: auto; 
+}
+
+.button.decimal,
+.button.parenthesis {
+    background-color: #ff7797;
+}
+
+.button:hover {
+    opacity: 0.8;
+    transform: scale(1.05);
+}
+
+.button:active {
+    transform: scale(0.95);
+}
