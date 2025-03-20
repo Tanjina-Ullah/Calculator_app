@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Calculator</title>
+    <link rel="stylesheet" type="text/css" href="calculator.css">
+  </head>
+  <body>
+    <h1>Calculator</h1>
+    <div class="calculator">
+    <div class="displayContainer">
+      <span id="display"></span>
+    </div>
+    <div class="flexContainer">
+      <button class="button number">7</button>
+      <button class="button number">8</button>
+      <button class="button number">9</button>
+      <button class="button operator">/</button>
+      <button class="button number">4</button>
+      <button class="button number">5</button>
+      <button class="button number">6</button>
+      <button class="button operator">*</button>
+      <button class="button number">1</button>
+      <button class="button number">2</button>
+      <button class="button number">3</button>
+      <button class="button operator">-</button>
+      <button class="button number">0</button>
+      <button class="button decimal">.</button>
+      <button class="button equals">=</button>
+      <button class="button operator">+</button>
+      <button class="button parenthesis">(</button>
+      <button class="button parenthesis">)</button>
+      <button class="button clear">C</button>
+    </div>
+  </div>
+    <script>
+      const precedence = { "^": 3, "*": 2, "/": 2, "+": 1, "-": 1 };
+      
+      function infixToPostfix(infix) {
+          let output = [];
+          let operators = [];
+          let tokens = infix.match(/\d+\.?\d*|[+\-*/()]/g);
+  
+          tokens.forEach(token => {
+              if (!isNaN(parseFloat(token))) {
+                  output.push(token);
+              } 
+              else if (token === "(") {
+                  operators.push(token);
+              } 
+              else if (token === ")") {
+                  while (operators.length && operators[operators.length - 1] !== "(") {
+                      output.push(operators.pop());
+                  }
+                  operators.pop();
+              } 
+              else {
+                  while (operators.length && precedence[operators[operators.length - 1]] >= precedence[token]) {
+                      output.push(operators.pop());
+                  }
+                  operators.push(token);
+              }
+          });
+          
+          while (operators.length) {
+              output.push(operators.pop());
+          }
+          
+          return output;
+      }
+  
+      function evaluatePostfix(postfix) {
+          let stack = [];
+          
+          postfix.forEach(token => {
+              if (!isNaN(parseFloat(token))) {
+                  stack.push(parseFloat(token));
+              } 
+              else {
+                  let b = stack.pop();
+                  let a = stack.pop();
+                  switch (token) {
+                      case "+": stack.push(a + b); break;
+                      case "-": stack.push(a - b); break;
+                      case "*": stack.push(a * b); break;
+                      case "/": stack.push(a / b); break;
+                  }
+              }
+          });
+          
+          return stack.pop();
+      }
+  
+      const numbersArr = Array.from(document.getElementsByClassName("number"));
+      const operatorsArr = Array.from(document.getElementsByClassName("operator"));
+      const parenthesisArr = Array.from(document.getElementsByClassName("parenthesis"));
+      const decimalButton = document.querySelector(".decimal");
+      const numberStrs = "0123456789".split("");
+  
+      const data = {
+          displayString: "0",
+          appendStringNum: (newChar) => {
+              if (newChar === ".") {
+                  // Check if the last number already contains a decimal point
+                  let lastNumber = data.displayString.split(/[\+\-\*\/\(\)]/).pop();
+                  if (lastNumber.includes(".")) {
+                      return;
+                  }
+              }
+  
+              if (data.displayString === "0" && newChar !== ".") {
+                  data.displayString = "";
+              }
+              data.displayString += newChar;
+              data.updateDisplay();
+          },
+  
+          appendStringOperator: (newChar) => {
+              if (numberStrs.includes(data.displayString.slice(-1)) || data.displayString.slice(-1) === ")") {
+                  data.displayString += newChar;
+              }
+              data.updateDisplay();
+          },
+  
+          appendStringParenthesis: (newChar) => {
+              if (newChar === ")") {
+                  if (data.displayString.split("(").length <= data.displayString.split(")").length) {
+                      return;
+                  }
+                  if (operatorsArr.map((operator) => operator.innerText).includes(data.displayString[data.displayString.length - 1])) {
+                      return;
+                  }
+              }
+              if (data.displayString === "0") {
+                  data.displayString = "";
+              }
+              data.displayString += newChar;
+              data.updateDisplay();
+          },
+  
+          updateDisplay: () => {
+              const display = document.getElementById("display");
+              display.innerText = data.displayString;
+          },
+      };
+  
+      document.getElementById("display").innerText = data.displayString;
+  
+      numbersArr.forEach(elem => elem.addEventListener("click", () => data.appendStringNum(elem.innerText)));
+      operatorsArr.forEach(elem => elem.addEventListener("click", () => data.appendStringOperator(elem.innerText)));
+      parenthesisArr.forEach(elem => elem.addEventListener("click", () => data.appendStringParenthesis(elem.innerText)));
+      decimalButton.addEventListener("click", () => data.appendStringNum("."));
+  
+      document.querySelector(".equals").addEventListener("click", () => {
+          try {
+              let postfix = infixToPostfix(data.displayString);
+              let result = evaluatePostfix(postfix);
+              data.displayString = result.toString();
+          } catch (error) {
+              data.displayString = "Error";
+          }
+          data.updateDisplay();
+      });
+
+      document.querySelector(".clear").addEventListener("click", () => {
+          data.displayString = "0";
+          data.updateDisplay();
+      });
+    </script>
+  </body>
+</html>
