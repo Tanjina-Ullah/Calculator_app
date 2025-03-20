@@ -33,7 +33,7 @@ h1 {
     color: #6a0572;
     margin-bottom: 15px;
     min-height: 40px;
-    width: calc(4 * 60px + 3 * 10px); /* Adjusted width to fit 4 buttons with gaps */
+    width: calc(4 * 60px + 3 * 10px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
